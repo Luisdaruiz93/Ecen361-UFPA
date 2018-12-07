@@ -18,4 +18,4 @@
     </ol>
 
 <h4>MSP432P401R</h4>
-<p>Used this to communiate with our Thermal Sensor Camera</p>
+<p>Used this to communiate with our Thermal Sensor Camera. THe following link, datasheet, https://cdn-learn.adafruit.com/assets/assets/000/043/261/original/Grid-EYE_SPECIFICATIONS%28Reference%29.pdf?1498680225 was very helpful for understanding the thermal camera.</p>
