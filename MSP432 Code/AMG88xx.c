@@ -13,7 +13,7 @@
 
 // Prototypes
 void AMG88xxInit(uint8_t);
-void readThermalPixels(uint8_t size);
+void readThermalPixels(uint16_t *, uint8_t size);
 
 
 // Constants
@@ -121,14 +121,13 @@ void AMG88xxInit(uint8_t addr)
  *  Returned: Nothing
  *
  *************************************************************************/
-void readThermalPixels(uint8_t size)
+void readThermalPixels(uint16_t * buff, uint8_t size)
 {
     //uint16_t recast;
     //float converted;
-    uint16_t bytesToRead = (size << 1);          // Double the Max # of Bytes
-    uint8_t rawData[128];
+    const uint8_t bytesToRead = (size << 1);          // Double the Max # of Bytes
+    uint8_t rawData[bytesToRead];
 
-    uint16_t pixelValue = 0;
     uint8_t i = 0;
     // Read from the sensor HELP See if I can move this and capsulate
     //I2C_setMode(EUSCI_B2_BASE, EUSCI_B_I2C_RECEIVE_MODE);
@@ -145,18 +144,24 @@ void readThermalPixels(uint8_t size)
          */
         I2C_setMode(EUSCI_B2_BASE, EUSCI_B_I2C_TRANSMIT_MODE);
         I2C_masterSendSingleByte(EUSCI_B2_BASE, (0x80 + i));
-        //I2C_masterReceiveStart(EUSCI_B2_BASE);
-        //I2C_masterSendSingleByte(EUSCI_B2_BASE, );
         I2C_setMode(EUSCI_B2_BASE, EUSCI_B_I2C_RECEIVE_MODE);
-        pixelValue = I2C_masterReceiveSingleByte(EUSCI_B2_BASE);
-        rawData[i] = pixelValue;
-        //pixelValue = I2C_slaveGetData(EUSCI_B2_BASE);
+        rawData[i] = I2C_masterReceiveSingleByte(EUSCI_B2_BASE);
         i++;
     }
 
-    while (1);
-
-
+    /* Every pixel has a high and low value. Combine both high and low values will give
+     * one actual pixel value. We need to combine our 128 data into 64 data pieces.
+     */
+    i = 0;
+    uint16_t highVal;
+    uint16_t lowVal;
+    while (i < bytesToRead)
+    {
+        lowVal = rawData[i];
+        highVal = rawData[i+1];
+        buff[i] = ((highVal << 8) | lowVal);
+        i += 2;
+    }
 }
 
 

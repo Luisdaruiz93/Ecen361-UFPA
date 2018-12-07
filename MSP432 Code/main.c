@@ -49,6 +49,9 @@ Graphics_Context g_sContext;
 /* ADC results buffer */
 static uint16_t resultsBuffer[2];
 
+// Prototyoe
+void DisplayToLCD(uint16_t *);
+
 /*
  * Main function
  */
@@ -56,11 +59,11 @@ int main(void)
 {
     /* Halting WDT and disabling master interrupts */
     //WDT_A_holdTimer();
-    //Interrupt_disableMaster();
+    Interrupt_disableMaster();
 
     // Test AMG88xx driver
-    AMG88xxInit(0x69);
-    readThermalPixels(64);
+    //AMG88xxInit(0x69);
+    //readThermalPixels(64);
 
     /* Set the core voltage level to VCORE1 */
     PCM_setCoreVoltageLevel(PCM_VCORE1);
@@ -89,51 +92,63 @@ int main(void)
     GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawStringCentered(&g_sContext,
-                                    (int8_t *)"Joystick:",
+                                    (int8_t *)"Xavier:",
                                     AUTO_STRING_LENGTH,
                                     64,
                                     30,
                                     OPAQUE_TEXT);
 
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 50, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 51, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 50, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 50, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 51, ClrAliceBlue);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 48, 50, ClrAliceBlue);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 49, ClrAliceBlue);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 49, ClrAliceBlue);
+
     /* Configures Pin 6.0 and 4.4 as ADC input */
-    GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P6, GPIO_PIN0, GPIO_TERTIARY_MODULE_FUNCTION);
-    GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P4, GPIO_PIN4, GPIO_TERTIARY_MODULE_FUNCTION);
+    //GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P6, GPIO_PIN0, GPIO_TERTIARY_MODULE_FUNCTION);
+    //GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P4, GPIO_PIN4, GPIO_TERTIARY_MODULE_FUNCTION);
 
     /* Initializing ADC (ADCOSC/64/8) */
-    ADC14_enableModule();
-    ADC14_initModule(ADC_CLOCKSOURCE_ADCOSC, ADC_PREDIVIDER_64, ADC_DIVIDER_8, 0);
+    //ADC14_enableModule();
+    //ADC14_initModule(ADC_CLOCKSOURCE_ADCOSC, ADC_PREDIVIDER_64, ADC_DIVIDER_8, 0);
 
     /* Configuring ADC Memory (ADC_MEM0 - ADC_MEM1 (A15, A9)  with repeat)
          * with internal 2.5v reference */
-    ADC14_configureMultiSequenceMode(ADC_MEM0, ADC_MEM1, true);
-    ADC14_configureConversionMemory(ADC_MEM0,
-            ADC_VREFPOS_AVCC_VREFNEG_VSS,
-            ADC_INPUT_A15, ADC_NONDIFFERENTIAL_INPUTS);
+    //ADC14_configureMultiSequenceMode(ADC_MEM0, ADC_MEM1, true);
+    //ADC14_configureConversionMemory(ADC_MEM0,
+            //ADC_VREFPOS_AVCC_VREFNEG_VSS,
+            //ADC_INPUT_A15, ADC_NONDIFFERENTIAL_INPUTS);
 
-    ADC14_configureConversionMemory(ADC_MEM1,
-            ADC_VREFPOS_AVCC_VREFNEG_VSS,
-            ADC_INPUT_A9, ADC_NONDIFFERENTIAL_INPUTS);
+    //ADC14_configureConversionMemory(ADC_MEM1,
+            //ADC_VREFPOS_AVCC_VREFNEG_VSS,
+            //ADC_INPUT_A9, ADC_NONDIFFERENTIAL_INPUTS);
 
     /* Enabling the interrupt when a conversion on channel 1 (end of sequence)
      *  is complete and enabling conversions */
-    ADC14_enableInterrupt(ADC_INT1);
+    //ADC14_enableInterrupt(ADC_INT1);
 
     /* Enabling Interrupts */
-    Interrupt_enableInterrupt(INT_ADC14);
-    Interrupt_enableMaster();
+    //Interrupt_enableInterrupt(INT_ADC14);
+    //Interrupt_enableMaster();
 
     /* Setting up the sample timer to automatically step through the sequence
      * convert.
      */
-    ADC14_enableSampleTimer(ADC_AUTOMATIC_ITERATION);
+    //ADC14_enableSampleTimer(ADC_AUTOMATIC_ITERATION);
 
     /* Triggering the start of the sample */
-    ADC14_enableConversion();
-    ADC14_toggleConversionTrigger();
+    //ADC14_enableConversion();
+    //ADC14_toggleConversionTrigger();
 
+    const uint8_t numOfPixels = 64;
+    uint16_t buffer[numOfPixels];
     while(1)
     {
-        PCM_gotoLPM0();
+        //readThermalPixels(buffer, numOfPixels);
+        //DisplayToLCD(buffer);
     }
 }
 
@@ -186,3 +201,44 @@ void ADC14_IRQHandler(void)
                                         OPAQUE_TEXT);
     }
 }
+
+
+
+void DisplayToLCD(uint16_t * buffer)
+{
+    /* Buffer contains a max of 64 pixel data. So for every pixel we will assign it to
+     * 16 pixels. 1x1 = 8x8. Reason is becuase our LCD screen is huge compared to the
+     * thermal sensor camera thing.
+     */
+    int i, j;
+    i = j = 0;
+    uint8_t height, width;
+    uint16_t content;
+    height = width = 0;
+
+    for (i; i <= 64; i++)
+    {
+        content = buffer[i];
+        j = 0;
+        while (j <= 64)
+        {
+            Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, width, height, content);
+            if (width % 7 == 0)
+            {
+                height++;
+            } else
+            {
+                width++;
+            }
+            j++;
+        }
+    }
+
+
+
+
+}
+
+
+
+
