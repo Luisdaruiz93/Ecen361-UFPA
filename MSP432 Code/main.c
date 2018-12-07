@@ -55,8 +55,12 @@ static uint16_t resultsBuffer[2];
 int main(void)
 {
     /* Halting WDT and disabling master interrupts */
-    WDT_A_holdTimer();
-    Interrupt_disableMaster();
+    //WDT_A_holdTimer();
+    //Interrupt_disableMaster();
+
+    // Test AMG88xx driver
+    AMG88xxInit(0x69);
+    readThermalPixels(64);
 
     /* Set the core voltage level to VCORE1 */
     PCM_setCoreVoltageLevel(PCM_VCORE1);
