@@ -235,7 +235,7 @@ void DisplayToLCD(uint16_t * buffer)
     }
 
 
-
+/* Comment test*/
 
 }
 
