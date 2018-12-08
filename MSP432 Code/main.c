@@ -37,14 +37,17 @@
 //
 //****************************************************************************
 
+//#include "HAL_I2C.h"
 #include <ti/devices/msp432p4xx/inc/msp.h>
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include <ti/grlib/grlib.h>
 #include "LcdDriver/Crystalfontz128x128_ST7735.h"
 #include <stdio.h>
+//#include "HAL_I2C.h"
 
 /* Graphic library context */
 Graphics_Context g_sContext;
+Graphics_Rectangle rectangle;
 
 /* ADC results buffer */
 static uint16_t resultsBuffer[2];
@@ -62,11 +65,16 @@ int main(void)
     Interrupt_disableMaster();
 
     // Test AMG88xx driver
-    //AMG88xxInit(0x69);
+    AMG88xxInit(0x69);
     //readThermalPixels(64);
+//    Init_I2C_GPIO();
+//    I2C_init();
+//    I2C_setslave(0x69);
+//    MG88xxInit(0x69);
+    //while(1);
 
     /* Set the core voltage level to VCORE1 */
-    PCM_setCoreVoltageLevel(PCM_VCORE1);
+    //PCM_setCoreVoltageLevel(PCM_VCORE1);
 
     /* Set 2 flash wait states for Flash bank 0 and 1*/
     FlashCtl_setWaitState(FLASH_BANK0, 2);
@@ -107,6 +115,10 @@ int main(void)
         Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 49, ClrAliceBlue);
         Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 49, ClrAliceBlue);
 
+
+        //AMG88xxInit(0x69);
+
+        //while(1);
     /* Configures Pin 6.0 and 4.4 as ADC input */
     //GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P6, GPIO_PIN0, GPIO_TERTIARY_MODULE_FUNCTION);
     //GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P4, GPIO_PIN4, GPIO_TERTIARY_MODULE_FUNCTION);
@@ -143,12 +155,12 @@ int main(void)
     //ADC14_enableConversion();
     //ADC14_toggleConversionTrigger();
 
-    const uint8_t numOfPixels = 64;
-    uint16_t buffer[numOfPixels];
+    uint8_t numOfPixels = 64;
+    uint16_t buffer[64];
     while(1)
     {
-        //readThermalPixels(buffer, numOfPixels);
-        //DisplayToLCD(buffer);
+        readThermalPixels(buffer, numOfPixels);
+        DisplayToLCD(buffer);
     }
 }
 
@@ -212,31 +224,38 @@ void DisplayToLCD(uint16_t * buffer)
      */
     int i, j;
     i = j = 0;
-    uint8_t height, width;
-    uint16_t content;
-    height = width = 0;
-
-    for (i; i <= 64; i++)
+    // This can be optimized
+    uint16_t heat;
+    uint8_t xPos, yPos;
+    xPos = yPos = 0;
+    for (i; i < 64; i++)
     {
-        content = buffer[i];
-        j = 0;
-        while (j <= 64)
+        rectangle.xMax = (xPos << 4) + 16;
+        rectangle.xMin = (xPos << 4);
+        rectangle.yMax = (yPos << 4) + 16;
+        rectangle.yMin = (yPos << 4);
+
+        heat = buffer[i];
+        if (heat >= 81)
         {
-            Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, width, height, content);
-            if (width % 7 == 0)
-            {
-                height++;
-            } else
-            {
-                width++;
-            }
-            j++;
+            heat = 0xff00;
+        } else if (heat > 80)
+        {
+            heat = 0xffff;
         }
+
+        Graphics_fillRectangleOnDisplay(&g_sCrystalfontz128x128, &rectangle, heat);
+
+        if (i != 0 && i % 8 == 0)
+                {
+                    yPos++;
+                    xPos = 0;
+                }
+                else
+                {
+                    xPos++;
+                }
     }
-
-
-
-
 }
 
 
