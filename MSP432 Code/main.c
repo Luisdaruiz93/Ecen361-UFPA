@@ -46,6 +46,8 @@
 /* Graphic library context */
 Graphics_Context g_sContext;
 
+//Graphics_Rectangle myRectangle;
+
 /* ADC results buffer */
 static uint16_t resultsBuffer[2];
 
@@ -103,9 +105,20 @@ int main(void)
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 50, ClrAliceBlue);
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 50, ClrAliceBlue);
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 51, ClrAliceBlue);
-        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 48, 50, ClrAliceBlue);
-        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 49, ClrAliceBlue);
-        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 49, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 48, 50, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 49, ClrAliceBlue);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 49, ClrAliceBlue);
+
+    // Dallin
+    Graphics_Rectangle myRectangle;
+    myRectangle.xMin = 16;
+    myRectangle.yMin = 16;
+    myRectangle.xMax = 31;
+    myRectangle.yMax = 31;
+
+    Graphics_fillRectangle(&g_sContext, &myRectangle);
+
+
 
     /* Configures Pin 6.0 and 4.4 as ADC input */
     //GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P6, GPIO_PIN0, GPIO_TERTIARY_MODULE_FUNCTION);
