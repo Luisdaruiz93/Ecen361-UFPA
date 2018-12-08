@@ -4,9 +4,5 @@
 
 USER_OBJS :=
 
-<<<<<<< HEAD
-LIBS := -l"C:/ti/simplelink_msp432p4_sdk_2_30_00_14/source/ti/grlib/lib/ccs/m4f/grlib.a" -l"ti/display/lib/display.aem4f" -l"ti/grlib/lib/ccs/m4f/grlib.a" -l"third_party/spiffs/lib/ccs/m4f/spiffs.a" -l"ti/drivers/lib/drivers_msp432p401x.aem4f" -l"third_party/fatfs/lib/ccs/m4f/fatfs.a" -l"ti/devices/msp432p4xx/driverlib/ccs/msp432p4xx_driverlib.lib" -llibc.a
-=======
 LIBS := -l"/Users/LuisDavidRuiz/ti/simplelink_msp432p4_sdk_2_30_00_14/source/ti/grlib/lib/ccs/m4f/grlib.a" -l"ti/display/lib/display.aem4f" -l"ti/grlib/lib/ccs/m4f/grlib.a" -l"third_party/spiffs/lib/ccs/m4f/spiffs.a" -l"ti/drivers/lib/drivers_msp432p401x.aem4f" -l"third_party/fatfs/lib/ccs/m4f/fatfs.a" -l"ti/devices/msp432p4xx/driverlib/ccs/msp432p4xx_driverlib.lib" -llibc.a
->>>>>>> 66b35d49145b1437d1bb127a87bfb3919dfdec3d
 

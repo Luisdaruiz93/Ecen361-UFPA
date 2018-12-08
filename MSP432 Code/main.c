@@ -51,7 +51,7 @@ Graphics_Context g_sContext;
 /* ADC results buffer */
 static uint16_t resultsBuffer[2];
 
-// Prototyoe
+// Prototype
 void DisplayToLCD(uint16_t *);
 
 /*
@@ -100,6 +100,7 @@ int main(void)
                                     30,
                                     OPAQUE_TEXT);
 
+<<<<<<< HEAD
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 50, ClrAliceBlue);
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 51, ClrAliceBlue);
     Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 50, ClrAliceBlue);
@@ -118,6 +119,21 @@ int main(void)
 
     Graphics_fillRectangle(&g_sContext, &myRectangle);
 
+=======
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 50, ClrYellowGreen);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 50, 51, ClrYellowGreen);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 50, ClrYellowGreen);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 50, ClrYellowGreen);
+    Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 51, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 48, 50, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 49, 49, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 51, 49, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 52, 50, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 53, 51, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 54, 52, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 55, 53, ClrYellowGreen);
+        Graphics_drawPixelOnDisplay(&g_sCrystalfontz128x128, 56, 54, ClrYellowGreen);
+>>>>>>> 66b35d49145b1437d1bb127a87bfb3919dfdec3d
 
 
     /* Configures Pin 6.0 and 4.4 as ADC input */
@@ -220,7 +236,7 @@ void ADC14_IRQHandler(void)
 void DisplayToLCD(uint16_t * buffer)
 {
     /* Buffer contains a max of 64 pixel data. So for every pixel we will assign it to
-     * 16 pixels. 1x1 = 8x8. Reason is becuase our LCD screen is huge compared to the
+     * 16 pixels. 1x1 = 8x8. Reason is because our LCD screen is huge compared to the
      * thermal sensor camera thing.
      */
     int i, j;
